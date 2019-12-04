@@ -1,11 +1,9 @@
 package service;
 
 import communication.Communication;
-import org.apache.commons.io.FileUtils;
+import communication.WorksheetUrl;
 import userinterface.DialogBox;
 import utils.FilesUtils;
-
-import java.io.File;
 
 public class WorksheetService {
 
@@ -17,12 +15,24 @@ public class WorksheetService {
         this.dialogBox = dialogBox;
     }
 
-    public String generateWorksheetHtmlFileWithWorksheetId() {
-        String userInput = dialogBox.getWorksheetIdFromUser();
-        Long worksheetId = Long.parseLong(userInput);
+    public String generateWorksheetHtmlWithoutAnswerSpaceFileWithWorksheetId(Long worksheetId) {
+        try {
+            Communication.WorksheetResponse worksheetResponse = communication.getWorksheetHTMLString(worksheetId, WorksheetUrl.WITHOUT_ANSWER_SPACE_URL);
+            String filePath = FilesUtils.writeStringToFile(worksheetResponse.getHtml(), String.format("%s_withoutAnswerSpace", worksheetResponse.getSkuName()));
+            return filePath;
+        }catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 
-        String htmlContent = communication.getWorksheetHTMLString(worksheetId);
-        String filePath = FilesUtils.writeStringToFile(htmlContent, String.format("worksheet_%s.html", userInput));
-       return filePath;
+    public String generateWorksheetHtmlWithAnswerSpaceFileWithWorksheetId(Long worksheetId) {
+
+        try {
+            Communication.WorksheetResponse worksheetResponse =  communication.getWorksheetHTMLString(worksheetId, WorksheetUrl.WITH_ANSWER_SPACE_URL);
+            String filePath = FilesUtils.writeStringToFile(worksheetResponse.getHtml(), String.format("%s_withAnswerSpace", worksheetResponse.getSkuName()));
+            return filePath;
+        }catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }

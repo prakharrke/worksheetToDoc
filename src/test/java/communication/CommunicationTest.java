@@ -16,8 +16,8 @@ public class CommunicationTest {
     }
     @Test
     public void testWorksheetToHtml() throws IOException {
-        String response = communication.getWorksheetHTMLString(1178204l);
-        Assert.assertTrue(response.contains("<style>"));
+        Communication.WorksheetResponse worksheetResponse =  communication.getWorksheetHTMLString(1178204l, WorksheetUrl.WITH_ANSWER_SPACE_URL);
+        Assert.assertTrue(worksheetResponse.getHtml().contains("<style>"));
     }
 
 }

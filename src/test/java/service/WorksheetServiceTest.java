@@ -3,7 +3,6 @@ package service;
 import communication.Communication;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import userinterface.DialogBox;
 
@@ -21,7 +20,7 @@ public class WorksheetServiceTest {
 
     @Test
     public void worksheetTohtmlFileTest () throws IOException {
-        String filePath = worksheetService.generateWorksheetHtmlFileWithWorksheetId();
+        String filePath = worksheetService.generateWorksheetHtmlWithoutAnswerSpaceFileWithWorksheetId(1178204l);
         File file = new File(filePath);
         Assert.assertTrue(file.exists());
         System.out.println(file.getAbsolutePath());

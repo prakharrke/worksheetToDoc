@@ -1,19 +1,18 @@
 package communication;
 
+import com.google.gson.Gson;
+
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 
 public class Communication {
 
-    public String getWorksheetHTMLString(long worksheetId) {
+    public WorksheetResponse getWorksheetHTMLString(long worksheetId, WorksheetUrl worksheetUrl) {
 
         try {
-            URL obj = new URL("http://sbcontent.imaxprogram.com:8080/app/inhouse/opsWorksheetHtml/" + worksheetId);
+            URL obj = new URL(worksheetUrl.displayName() + worksheetId);
 
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
             con.setRequestMethod("GET");
@@ -32,15 +31,48 @@ public class Communication {
                 in.close();
 
                 // print result
-                System.out.println(response.toString());
-                return response.toString();
+
+                String responseString = response.toString();
+                WorksheetResponse worksheetResponse = new Gson().fromJson(responseString, WorksheetResponse.class);
+
+                return worksheetResponse;
             } else {
-                throw new RuntimeException("Received response status as " + responseCode);
+                throw new RuntimeException("Could not fetch worksheet with id " + worksheetId);
             }
         }catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-
     }
+
+    public static class WorksheetResponse {
+
+        String skuName;
+        String html;
+
+        public WorksheetResponse(String skuName, String html) {
+            this.skuName = skuName;
+            this.html = html;
+        }
+
+        public WorksheetResponse() {
+        }
+
+        public String getSkuName() {
+            return skuName;
+        }
+
+        public String getHtml() {
+            return html;
+        }
+
+        public void setSkuName(String skuName) {
+            this.skuName = skuName;
+        }
+
+        public void setHtml(String html) {
+            this.html = html;
+        }
+    }
+
 }
